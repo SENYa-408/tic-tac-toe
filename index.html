@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="grid-wrapper">
+        <div class="grid">
+          <div class="cell x win"></div>
+          <div class="cell o"></div>
+          <div class="cell o"></div>
+          <div class="cell"></div>
+          <div class="cell x win"></div>
+          <div class="cell"></div>
+          <div class="cell x"></div>
+          <div class="cell o"></div>
+          <div class="cell x win"></div>
+        </div>
+      </div>
+      <div class="score">
+        <div>
+          <p>Player</p>
+          <span id="playerScore">0</span>
+        </div>
+        <div>
+          <p>Draw</p>
+          <span id="DrawScore">0</span>
+        </div>
+        <div>
+          <p>Computer</p>
+          <span id="ComputerScore">0</span>
+        </div>
+        <p class="reset">RESET</p>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

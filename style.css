@@ -1,0 +1,130 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: lightblue;
+}
+
+body {
+  background-color: lightblue;
+}
+
+.wrapper {
+  padding: 5px;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+}
+
+.grid-wrapper {
+  padding: 5px;
+
+  width: 500px;
+  height: 500px;
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.cell {
+  margin: 5px;
+
+  width: 120px;
+  flex-grow: 1;
+
+  border: 1px solid rgba(0, 0, 0, 0.8);
+
+  background-size: contain;
+  background-position: center;
+}
+
+.x {
+  background-image: url("./imgs/x.png");
+}
+
+.o {
+  background-image: url("./imgs/o.png");
+}
+
+.win {
+  animation-name: pulsation;
+  animation-duration: 3s;
+}
+
+.draw {
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-iteration-count: 3;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  width: 200px;
+  height: 500px;
+
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.score div {
+  display: inherit;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  flex-grow: 1;
+}
+
+.score div p {
+  font-size: 25px;
+  margin: 10px;
+}
+
+.score div span {
+  font-size: 40px;
+}
+
+.reset {
+  display: inherit;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 50px;
+
+  font-size: 25px;
+
+  cursor: pointer;
+
+  border-top: 1px solid lightblue;
+}
+
+@keyframes pulsation {
+  0% {
+    background-size: 100%;
+  }
+  50% {
+    background-size: 150%;
+  }
+  100% {
+    background-size: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    background-image: none;
+  }
+}
