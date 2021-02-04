@@ -19,8 +19,9 @@ let curCombination = [[], []];
 let typeX = false; // if x => true; if o => false
 let Clicked = [];
 let scores = [0, 0, 0];
+let isBlocked = false;
 
-const reset = () => {
+const reset = (isResetBtnClicked) => {
   cells.forEach((el) => {
     el.classList.remove("x");
     el.classList.remove("o");
@@ -28,20 +29,24 @@ const reset = () => {
     el.classList.remove("draw");
     Clicked = [];
     curCombination = [[], []];
-    // scores = [0, 0, 0];
-    // drawScore.innerText = player1Score.innerText = player2Score.innerText = 0;
+    isBlocked = false;
+
+    if (isResetBtnClicked) {
+      scores = [0, 0, 0];
+      drawScore.innerText = player1Score.innerText = player2Score.innerText = 0;
+    }
   });
 };
 
 const checkWinner = () => {
   winCombinations.forEach((winCombination, i) => {
     let winner;
-    if (winCombination.every((r) => curCombination[0].indexOf(r) >= 0)) {
+    if (winCombination.every((r) => curCombination[0].includes(r))) {
       winner = 0;
       console.log("X WINNER");
       scores[0]++;
       player1Score.innerText = scores[0];
-    } else if (winCombination.every((r) => curCombination[1].indexOf(r) >= 0)) {
+    } else if (winCombination.every((r) => curCombination[1].includes(r))) {
       winner = 1;
       console.log("O WINNER");
       scores[1]++;
@@ -64,6 +69,7 @@ const checkWinner = () => {
             if (el === cellIndex) {
               console.log(el, cells[cellIndex]);
               cells[cellIndex].classList.add("win");
+              isBlocked = true;
               setTimeout(reset, 3000);
             }
           });
@@ -74,8 +80,8 @@ const checkWinner = () => {
 };
 
 cells.forEach((el, i) => {
-  if (!Clicked.includes(i)) {
-    el.addEventListener("click", () => {
+  el.addEventListener("click", () => {
+    if (!Clicked.includes(i) && !isBlocked) {
       Clicked.push(i);
       let type = typeX ? "x" : "o";
 
@@ -89,8 +95,10 @@ cells.forEach((el, i) => {
       checkWinner();
 
       typeX = typeX ? false : true;
-    });
-  }
+    }
+  });
 });
 
-reset_btn.addEventListener("click", reset);
+reset_btn.addEventListener("click", () => {
+  reset(true);
+});
