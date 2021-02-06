@@ -20,6 +20,8 @@ let typeX = false; // if x => true; if o => false
 let Clicked = [];
 let scores = [0, 0, 0];
 let isBlocked = false;
+let isWinnerFound = [false, false];
+let timeout = 0;
 
 const reset = (isResetBtnClicked) => {
   cells.forEach((el) => {
@@ -27,52 +29,72 @@ const reset = (isResetBtnClicked) => {
     el.classList.remove("o");
     el.classList.remove("win");
     el.classList.remove("draw");
-    Clicked = [];
-    curCombination = [[], []];
-    isBlocked = false;
+  });
 
-    if (isResetBtnClicked) {
-      scores = [0, 0, 0];
-      drawScore.innerText = player1Score.innerText = player2Score.innerText = 0;
+  Clicked = [];
+  curCombination = [[], []];
+  isBlocked = false;
+  timeout = 0;
+
+  if (isResetBtnClicked) {
+    scores = [0, 0, 0];
+    drawScore.innerText = player1Score.innerText = player2Score.innerText = 0;
+  }
+};
+
+const checkWinner = () => {
+  let winner;
+  winCombinations.forEach((winCombination, i) => {
+    if (winCombination.every((r) => curCombination[0].includes(r))) {
+      isWinnerFound[0] = true;
+    } else if (winCombination.every((r) => curCombination[1].includes(r))) {
+      isWinnerFound[1] = true;
+    }
+
+    if (winner === undefined) {
+      if (isWinnerFound[0]) {
+        winner = 0;
+        console.log("X WINNER");
+        scores[0]++;
+        player1Score.innerText = scores[0];
+      } else if (isWinnerFound[1]) {
+        winner = 1;
+        console.log("O WINNER");
+        scores[1]++;
+        player2Score.innerText = scores[1];
+      } else if (Clicked.length === 9) {
+        winner = 3;
+        console.log("DRAW");
+        scores[2]++;
+        drawScore.innerText = scores[2];
+      }
+    }
+
+    if (winner !== undefined) {
+      showWinner(winner);
+    }
+
+    if (i === 7) {
+      isWinnerFound = [false, false];
     }
   });
 };
 
-const checkWinner = () => {
-  winCombinations.forEach((winCombination, i) => {
-    let winner;
-    if (winCombination.every((r) => curCombination[0].includes(r))) {
-      winner = 0;
-      console.log("X WINNER");
-      scores[0]++;
-      player1Score.innerText = scores[0];
-    } else if (winCombination.every((r) => curCombination[1].includes(r))) {
-      winner = 1;
-      console.log("O WINNER");
-      scores[1]++;
-      player2Score.innerText = scores[1];
-    } else if (Clicked.length === 9 && i === 0 && winner !== undefined) {
-      winner = 3;
-      console.log("DRAW");
-      scores[2]++;
-      drawScore.innerText = scores[2];
-    }
-    console.log(scores);
-
-    if (winner !== undefined) {
-      cells.forEach((cell, cellIndex) => {
-        if (winner === 3) {
-          cell.classList.add("draw");
-          setTimeout(reset, 1500);
-        } else {
-          curCombination[winner].find((el, i) => {
-            if (el === cellIndex) {
-              console.log(el, cells[cellIndex]);
-              cells[cellIndex].classList.add("win");
-              isBlocked = true;
-              setTimeout(reset, 3000);
-            }
-          });
+const showWinner = (winner) => {
+  cells.forEach((cell, cellIndex) => {
+    if (winner === 3) {
+      cell.classList.add("draw");
+      if (!timeout) {
+        timeout = setTimeout(reset, 1500);
+      }
+    } else {
+      curCombination[winner].find((el, i) => {
+        if (el === cellIndex) {
+          cells[cellIndex].classList.add("win");
+          isBlocked = true;
+          if (!timeout) {
+            timeout = setTimeout(reset, 3000);
+          }
         }
       });
     }
@@ -83,7 +105,6 @@ cells.forEach((el, i) => {
   el.addEventListener("click", () => {
     if (!Clicked.includes(i) && !isBlocked) {
       Clicked.push(i);
-      let type = typeX ? "x" : "o";
 
       if (typeX) {
         curCombination[0].push(i);
@@ -91,7 +112,7 @@ cells.forEach((el, i) => {
         curCombination[1].push(i);
       }
 
-      el.classList.add(type);
+      el.classList.add(typeX ? "x" : "o");
       checkWinner();
 
       typeX = typeX ? false : true;
@@ -100,5 +121,6 @@ cells.forEach((el, i) => {
 });
 
 reset_btn.addEventListener("click", () => {
+  clearTimeout(timeout);
   reset(true);
 });
