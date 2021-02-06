@@ -51,7 +51,7 @@ const checkWinner = () => {
       console.log("O WINNER");
       scores[1]++;
       player2Score.innerText = scores[1];
-    } else if (Clicked.length === 9 && i === 0) {
+    } else if (Clicked.length === 9 && i === 0 && winner !== undefined) {
       winner = 3;
       console.log("DRAW");
       scores[2]++;
