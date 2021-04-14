@@ -15,112 +15,99 @@ const player2Score = document.getElementById("player2Score");
 const cells = document.querySelectorAll(".cell");
 const reset_btn = document.querySelector(".reset");
 
-let curCombination = [[], []];
-let typeX = false; // if x => true; if o => false
+let curCombinations = {
+  x: [],
+  o: [],
+};
+let typeX = true; // x => true; o => false
+let timeout;
 let Clicked = [];
-let scores = [0, 0, 0];
 let isBlocked = false;
-let isWinnerFound = [false, false];
-let timeout = 0;
+let scores = {
+  x: 0,
+  draw: 0,
+  o: 0,
+};
 
-const reset = (isResetBtnClicked) => {
-  cells.forEach((el) => {
-    el.classList.remove("x");
-    el.classList.remove("o");
-    el.classList.remove("win");
-    el.classList.remove("draw");
-  });
-
+const reset = () => {
+  // Clear all values
+  curCombinations = {
+    x: [],
+    o: [],
+  };
   Clicked = [];
-  curCombination = [[], []];
-  isBlocked = false;
-  timeout = 0;
+  typeX = true;
+  clearTimeout(timeout);
 
-  if (isResetBtnClicked) {
-    scores = [0, 0, 0];
-    drawScore.innerText = player1Score.innerText = player2Score.innerText = 0;
-  }
+  cells.forEach((cell) => {
+    cell.classList.remove("win");
+    cell.classList.remove("x");
+    cell.classList.remove("o");
+  });
+  isBlocked = false;
+};
+
+const isXWinner = (el) => {
+  return curCombinations.x.includes(el);
+};
+
+const isOWinner = (el) => {
+  return curCombinations.o.includes(el);
 };
 
 const checkWinner = () => {
-  let winner;
-  winCombinations.forEach((winCombination, i) => {
-    if (winCombination.every((r) => curCombination[0].includes(r))) {
-      isWinnerFound[0] = true;
-    } else if (winCombination.every((r) => curCombination[1].includes(r))) {
-      isWinnerFound[1] = true;
-    }
-
-    if (winner === undefined) {
-      if (isWinnerFound[0]) {
-        winner = 0;
-        console.log("X WINNER");
-        scores[0]++;
-        player1Score.innerText = scores[0];
-      } else if (isWinnerFound[1]) {
-        winner = 1;
-        console.log("O WINNER");
-        scores[1]++;
-        player2Score.innerText = scores[1];
-      } else if (Clicked.length === 9) {
-        winner = 3;
-        console.log("DRAW");
-        scores[2]++;
-        drawScore.innerText = scores[2];
-      }
-    }
-
-    if (winner !== undefined) {
-      showWinner(winner);
-    }
-
-    if (i === 7) {
-      isWinnerFound = [false, false];
-    }
-  });
-};
-
-const showWinner = (winner) => {
-  cells.forEach((cell, cellIndex) => {
-    if (winner === 3) {
-      cell.classList.add("draw");
-      if (!timeout) {
-        timeout = setTimeout(reset, 1500);
-      }
-    } else {
-      curCombination[winner].find((el, i) => {
-        if (el === cellIndex) {
-          cells[cellIndex].classList.add("win");
-          isBlocked = true;
-          if (!timeout) {
-            timeout = setTimeout(reset, 3000);
-          }
-        }
+  winCombinations.forEach((winCombination, winCombindex) => {
+    if (winCombination.every(isXWinner)) {
+      console.log("X WIN");
+      scores.x++;
+      player1Score.innerText = scores.x;
+      curCombinations.x.forEach((el) => {
+        cells[el].classList.add("win");
       });
+      isBlocked = true;
+      timeout = setTimeout(reset, 3000);
+    } else if (winCombination.every(isOWinner)) {
+      console.log("O WIN");
+      scores.o++;
+      player2Score.innerText = scores.o;
+      curCombinations.o.forEach((el) => {
+        cells[el].classList.add("win");
+      });
+      isBlocked = true;
+      timeout = setTimeout(reset, 3000);
+    } else if (
+      !winCombination.every(isOWinner) &&
+      !winCombination.every(isXWinner) &&
+      Clicked.length === 9
+    ) {
+      console.log("DRAW");
+      scores.draw++;
+      drawScore.innerText = scores.draw;
+      cells.forEach((cell) => {
+        cell.classList.add("draw");
+      });
+      isBlocked = true;
+      timeout = setTimeout(reset, 3000);
     }
   });
 };
 
-cells.forEach((el, i) => {
-  el.addEventListener("click", () => {
-    if (!Clicked.includes(i) && !isBlocked) {
-      Clicked.push(i);
+cells.forEach((cell, cellIndex) => {
+  cell.addEventListener("click", () => {
+    if (!isBlocked) {
+      typeX
+        ? curCombinations.x.push(cellIndex)
+        : curCombinations.o.push(cellIndex);
 
-      if (typeX) {
-        curCombination[0].push(i);
-      } else {
-        curCombination[1].push(i);
+      if (!Clicked.includes(cellIndex)) {
+        cell.classList.add(typeX ? "x" : "o");
       }
 
-      el.classList.add(typeX ? "x" : "o");
+      Clicked.push(cellIndex);
       checkWinner();
-
-      typeX = typeX ? false : true;
+      typeX = !typeX;
     }
   });
 });
 
-reset_btn.addEventListener("click", () => {
-  clearTimeout(timeout);
-  reset(true);
-});
+reset_btn.addEventListener("click", reset);
