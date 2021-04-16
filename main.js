@@ -56,40 +56,36 @@ const isOWinner = (el) => {
 };
 
 const checkWinner = () => {
+  let isDraw = true;
+
   winCombinations.forEach((winCombination, winCombindex) => {
     if (winCombination.every(isXWinner)) {
       console.log("X WIN");
       scores.x++;
       player1Score.innerText = scores.x;
-      curCombinations.x.forEach((el) => {
-        cells[el].classList.add("win");
-      });
+      curCombinations.x.forEach((el) => cells[el].classList.add("win"));
       isBlocked = true;
       timeout = setTimeout(reset, 3000);
+      isDraw = false;
     } else if (winCombination.every(isOWinner)) {
       console.log("O WIN");
       scores.o++;
       player2Score.innerText = scores.o;
-      curCombinations.o.forEach((el) => {
-        cells[el].classList.add("win");
-      });
+      curCombinations.o.forEach((el) => cells[el].classList.add("win"));
       isBlocked = true;
       timeout = setTimeout(reset, 3000);
-    } else if (
-      !winCombination.every(isOWinner) &&
-      !winCombination.every(isXWinner) &&
-      Clicked.length === 9
-    ) {
-      console.log("DRAW");
-      scores.draw++;
-      drawScore.innerText = scores.draw;
-      cells.forEach((cell) => {
-        cell.classList.add("draw");
-      });
-      isBlocked = true;
-      timeout = setTimeout(reset, 3000);
+      isDraw = false;
     }
   });
+
+  if (Clicked.length === 9 && isDraw) {
+    console.log("DRAW");
+    scores.draw++;
+    drawScore.innerText = scores.draw;
+    cells.forEach((cell) => cell.classList.add("draw"));
+    isBlocked = true;
+    timeout = setTimeout(reset, 3000);
+  }
 };
 
 cells.forEach((cell, cellIndex) => {
