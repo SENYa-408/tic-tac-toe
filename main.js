@@ -43,6 +43,7 @@ const reset = () => {
     cell.classList.remove("win");
     cell.classList.remove("x");
     cell.classList.remove("o");
+    cell.classList.remove("draw");
   });
   isBlocked = false;
 };
@@ -58,33 +59,30 @@ const isOWinner = (el) => {
 const checkWinner = () => {
   let isDraw = true;
 
-  winCombinations.forEach((winCombination, winCombindex) => {
+  winCombinations.forEach((winCombination) => {
     if (winCombination.every(isXWinner)) {
-      console.log("X WIN");
       scores.x++;
       player1Score.innerText = scores.x;
       curCombinations.x.forEach((el) => cells[el].classList.add("win"));
       isBlocked = true;
-      timeout = setTimeout(reset, 3000);
       isDraw = false;
+      timeout = setTimeout(reset, 3000);
     } else if (winCombination.every(isOWinner)) {
-      console.log("O WIN");
       scores.o++;
       player2Score.innerText = scores.o;
       curCombinations.o.forEach((el) => cells[el].classList.add("win"));
       isBlocked = true;
-      timeout = setTimeout(reset, 3000);
       isDraw = false;
+      timeout = setTimeout(reset, 3000);
     }
   });
 
   if (Clicked.length === 9 && isDraw) {
-    console.log("DRAW");
     scores.draw++;
     drawScore.innerText = scores.draw;
     cells.forEach((cell) => cell.classList.add("draw"));
     isBlocked = true;
-    timeout = setTimeout(reset, 3000);
+    timeout = setTimeout(reset, 1500);
   }
 };
 
