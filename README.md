@@ -1,6 +1,11 @@
 # tic-tac-toe
 
-Simple web tic-tac-toe game
+Simple web tic-tac-toe game to play with your friends
+
+# Examples
+
+![0-example](https://github.com/SENYa-408/tic-tac-toe/blob/main/readme-imgs/0-example.png)
+![1-example](https://github.com/SENYa-408/tic-tac-toe/blob/main/readme-imgs/1-example.png)
 
 # Install
 
